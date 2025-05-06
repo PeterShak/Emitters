@@ -3,10 +3,13 @@ class Particle {
     this.position = createVector(x, y)
     this.velocity = p5.Vector.random2D().mult(random(0.5, 2))
     this.acceleration = createVector(0, 0)
-    this.r = 10
+
+    // Random radius
+    this.r = random(5, 15)
+
     this.lifespan = 255
 
-    // Assign a random color
+    // Random color
     this.color = color(random(100, 255), random(100, 255), random(100, 255))
   }
 
