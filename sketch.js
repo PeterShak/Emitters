@@ -5,18 +5,22 @@ let canvas;
 
 function setup() {
   canvas = createCanvas(400, 600);
-  canvas.canvas.oncontextmenu = () => false; // Disable context menu on right-click
-  emitters.push(new Emitter(width / 2, 30));
-  magnets.push(new Magnet(width / 2, height / 2));
-  G = createVector(0, 0.1);
+  canvas.canvas.oncontextmenu = () => false; // Disable right-click menu
+  resetScene();
   ellipseMode(RADIUS);
   noStroke();
+}
+
+function resetScene() {
+  emitters = [new Emitter(width / 2, 30)];
+  magnets = [];
+  G = createVector(0, 0.1);
 }
 
 function draw() {
   background(220);
 
-  // Gravity controls
+  // Gravity control
   if (keyIsDown(UP_ARROW)) {
     G.y = max(-1, G.y - 0.01);
   } else if (keyIsDown(DOWN_ARROW)) {
@@ -28,6 +32,7 @@ function draw() {
     m.draw();
   }
 
+  // Update emitters and apply magnet forces
   for (let e of emitters) {
     e.update();
 
@@ -38,7 +43,6 @@ function draw() {
     }
   }
 
-  // Display gravity
   console.log("Gravity: " + G.y.toFixed(2));
 }
 
@@ -61,7 +65,10 @@ class Emitter {
       p.draw();
     }
 
-    this.particles.push(new Particle(this.x, this.y));
+    // Emit more particles each frame
+    for (let i = 0; i < 2; i++) {
+      this.particles.push(new Particle(this.x, this.y));
+    }
   }
 }
 
@@ -74,6 +81,17 @@ function mousePressed() {
 }
 
 function keyPressed() {
+  // SPACE = remove all magnets
+  if (key === ' ') {
+    magnets = [];
+  }
+
+  // Backspace = reset everything 
+  if (keyCode === 46) {
+    resetScene();
+  }
+
+  // M — toggle polarity
   if (key === 'm' || key === 'M') {
     for (let m of magnets) {
       m.togglePolarity();
